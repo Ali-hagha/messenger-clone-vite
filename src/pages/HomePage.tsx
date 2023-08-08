@@ -2,7 +2,7 @@ import AuthForm from '../components/auth/AuthForm';
 import { Navigate } from 'react-router-dom';
 import { pocketbase } from '../lib/pocketbase';
 
-export default function Home() {
+export default function HomePage() {
   const currentUser = pocketbase.authStore.model;
 
   if (currentUser && currentUser.email) {

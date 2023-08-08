@@ -1,8 +1,8 @@
 import { defer } from 'react-router-dom';
 import { pocketbase } from '../lib/pocketbase';
-import { PbUser } from '../types/types';
+import { PbChat } from '../types/types';
 
-const getUsers = async () => {
+const getChats = async () => {
   const currentUser = pocketbase.authStore.model;
 
   if (!currentUser?.email) {
@@ -10,17 +10,17 @@ const getUsers = async () => {
   }
 
   try {
-    const users = pocketbase.collection('users').getFullList({
+    const chats = pocketbase.collection('chats').getFullList({
       sort: '-created',
-      filter: `id != '${currentUser.id}'`,
+      expand: 'users',
+      filter: `users ~ '${currentUser.id}'`,
     });
-
     return defer({
-      users: users as unknown as Promise<PbUser[]>,
+      chats: chats as unknown as Promise<PbChat[]>,
     });
   } catch (_) {
     return [];
   }
 };
 
-export default getUsers;
+export default getChats;

@@ -13,7 +13,7 @@ export type PbUser = {
   verified: boolean;
 };
 
-export type PbConversation = {
+export type PbChat = {
   collectionId: string;
   collectionName: string;
   created: string;
@@ -37,5 +37,5 @@ export type PbMessage = {
   seenBy: string[];
   sender: string;
   updated: Date;
-  expand: { seenBy: PbUser[]; sender: PbUser; conversation: PbConversation };
+  expand: { seenBy: PbUser[]; sender: PbUser; conversation: PbChat };
 };

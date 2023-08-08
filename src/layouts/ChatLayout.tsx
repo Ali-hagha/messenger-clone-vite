@@ -1,12 +1,22 @@
-import { Outlet } from 'react-router-dom';
+import { Await, Outlet, useLoaderData } from 'react-router-dom';
+import ChatList from '../components/chats/ChatList';
+import { PbChat } from '../types/types';
+import { Suspense } from 'react';
+import ChatListSkeleton from '../components/skeletons/ChatListSkeleton';
 
-const ChatLayout = () => {
+const ChatsLayout = () => {
+  const { chats } = useLoaderData() as { chats: Promise<PbChat[]> | never[] };
+
   return (
-    <div>
-      <h2>Chat Layout</h2>
+    <main className="w-full flex">
+      <Suspense fallback={<ChatListSkeleton />}>
+        <Await resolve={chats}>
+          {(resolvedChats: PbChat[]) => <ChatList chats={resolvedChats} />}
+        </Await>
+      </Suspense>
       <Outlet />
-    </div>
+    </main>
   );
 };
 
-export default ChatLayout;
+export default ChatsLayout;

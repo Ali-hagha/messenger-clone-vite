@@ -1,5 +1,7 @@
-const ChatsPage = () => {
-  return <div>ChatsPage</div>;
+import EmptyChatBox from '../components/ui/EmptyChatBox';
+
+const ChatPage = () => {
+  return <EmptyChatBox />;
 };
 
-export default ChatsPage;
+export default ChatPage;

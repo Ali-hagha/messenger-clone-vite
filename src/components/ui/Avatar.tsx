@@ -1,8 +1,7 @@
-'use client';
-
 import clsx from 'clsx';
 import { useState } from 'react';
 import { PbUser } from '../../types/types';
+import { Skeleton } from './skeleton';
 
 interface Props {
   user: PbUser;
@@ -11,6 +10,7 @@ interface Props {
 
 const Avatar = ({ onClick, user }: Props) => {
   const [isActive] = useState(true);
+  const [isImageLoading, setIsImageLoading] = useState(true);
 
   return (
     <div className="relative flex items-center">
@@ -23,7 +23,7 @@ const Avatar = ({ onClick, user }: Props) => {
         )}
       >
         <img
-          className="w-10 h-10"
+          className={clsx(`w-10 h-10`, isImageLoading ? 'hidden' : null)}
           src={
             user?.avatarUrl ||
             `https://api.dicebear.com/6.x/pixel-art/svg?seed=${user.email}`
@@ -31,7 +31,9 @@ const Avatar = ({ onClick, user }: Props) => {
           alt="avatar"
           height={40}
           width={40}
+          onLoad={() => setIsImageLoading(false)}
         />
+        {isImageLoading && <Skeleton className="w-10 h-10 bg-gray-100" />}
       </button>
 
       {isActive && (

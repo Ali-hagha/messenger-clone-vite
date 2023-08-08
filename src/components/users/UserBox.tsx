@@ -1,5 +1,3 @@
-'use client';
-
 import axios from 'axios';
 import { MouseEvent, useCallback, useState } from 'react';
 import { PbUser } from '../../types/types';

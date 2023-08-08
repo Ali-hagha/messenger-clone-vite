@@ -19,6 +19,7 @@ import ChatsPage from './pages/ChatsPage';
 import ChatMessagesPage from './pages/ChatMessagesPage';
 import NotFoundPage from './pages/NotFoundPage';
 import getUsers from './actions/getUsers';
+import getChats from './actions/getChats';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -26,7 +27,7 @@ const router = createBrowserRouter(
       <Route index element={<HomePage />} />
       <Route element={<AppLayout />}>
         <Route path="users" element={<UsersPage />} loader={getUsers} />
-        <Route element={<ChatLayout />}>
+        <Route element={<ChatLayout />} loader={getChats}>
           <Route path="chats" element={<ChatsPage />}>
             <Route path=":chatId" element={<ChatMessagesPage />} />
           </Route>
