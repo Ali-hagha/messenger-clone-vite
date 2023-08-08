@@ -3,7 +3,7 @@ import { SubmitHandler, UseFormSetError, useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 
 import { CredentialInputType } from './AuthForm';
-import Input from '../ui/inputs/Input';
+import Input from '../ui/Input';
 import Button from '../ui/Button';
 import { pocketbase } from '../../lib/pocketbase';
 

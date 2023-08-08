@@ -1,10 +1,7 @@
-'use client';
-
-import { CredentialInputType } from '@/app/(site)/components/AuthForm';
 import clsx from 'clsx';
-import React from 'react';
 
 import { FieldErrors, UseFormRegister } from 'react-hook-form';
+import { CredentialInputType } from '../auth/AuthForm';
 
 interface Props {
   id: 'email' | 'password' | 'name';

@@ -17,6 +17,9 @@ module.exports = {
       },
     },
     extend: {
+      backgroundImage: {
+        'chat-gradient': "url('/images/squiggle-bg.svg')",
+      },
       colors: {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
@@ -73,5 +76,11 @@ module.exports = {
       },
     },
   },
-  plugins: [require('tailwindcss-animate')],
+  plugins: [
+    require('tailwindcss-animate'),
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    require('@tailwindcss/forms')({
+      strategy: 'class',
+    }),
+  ],
 };
