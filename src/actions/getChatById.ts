@@ -9,7 +9,7 @@ const getChatById = async (chatId: string) => {
       return null;
     }
 
-    const chat = await pocketbase.collection('chats').getOne(chatId, {
+    const chat = pocketbase.collection('chats').getOne(chatId, {
       expand: 'users',
     });
 

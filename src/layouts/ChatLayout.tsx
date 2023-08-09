@@ -8,14 +8,14 @@ const ChatsLayout = () => {
   const { chats } = useLoaderData() as { chats: Promise<PbChat[]> | never[] };
 
   return (
-    <main className="w-full flex">
+    <div className="w-full flex">
       <Suspense fallback={<ChatListSkeleton />}>
         <Await resolve={chats}>
           {(resolvedChats: PbChat[]) => <ChatList chats={resolvedChats} />}
         </Await>
       </Suspense>
       <Outlet />
-    </main>
+    </div>
   );
 };
 

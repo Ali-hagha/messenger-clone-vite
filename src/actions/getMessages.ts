@@ -1,11 +1,11 @@
 import { pocketbase } from '../lib/pocketbase';
 import { PbMessage } from '../types/types';
 
-const getMessages = async (conversationId: string) => {
+const getMessages = async (chatId: string) => {
   try {
-    const messages = await pocketbase.collection('messages').getFullList({
+    const messages = pocketbase.collection('messages').getFullList({
       sort: '+created',
-      filter: `conversation = '${conversationId}'`,
+      filter: `chat = '${chatId}'`,
       expand: 'sender,seenBy',
     });
 

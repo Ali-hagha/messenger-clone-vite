@@ -24,7 +24,6 @@ const ChatBox = ({ chat, active }: Props) => {
 
   useEffect(() => {
     const getLastMessage = async () => {
-      console.log('request');
       setIsLoading(true);
 
       pocketbase
@@ -36,9 +35,7 @@ const ChatBox = ({ chat, active }: Props) => {
           const message = res as unknown as PbMessage;
           setLastMessage(message);
         })
-        .catch(error => {
-          console.log(error);
-        })
+        .catch(() => {})
         .finally(() => {
           setIsLoading(false);
         });
@@ -77,7 +74,7 @@ const ChatBox = ({ chat, active }: Props) => {
 
   return (
     <Link
-      to={`/conversations/${chat.id}`}
+      to={`/chats/${chat.id}`}
       className={clsx(
         `hover:bg-slate-200 text-gray-500 hover:text-gray-700 active:bg-slate-300 transition flex items-center justify-start p-3 rounded-xl cursor-pointer`,
         active ? 'bg-slate-200 text-sky-600' : 'bg-white md:bg-transparent'
