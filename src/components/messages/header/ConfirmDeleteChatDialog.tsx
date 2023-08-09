@@ -8,6 +8,9 @@ import {
   DialogTitle,
 } from '../../ui/dialog';
 import Button from '../../ui/Button';
+import { pocketbase } from '../../../lib/pocketbase';
+import useChatInfo from '../../../hooks/useChatInfo';
+import { useNavigate } from 'react-router-dom';
 
 interface Props {
   isOpen: boolean;
@@ -16,10 +19,17 @@ interface Props {
 
 const ConfirmDeleteChatDialog = ({ isOpen, setIsOpen }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
+  const { chatId } = useChatInfo();
+  const navigate = useNavigate();
 
-  const handleDeleteChat = () => {
+  const handleDeleteChat = async () => {
     setIsLoading(true);
-    console.log('delete chat');
+    await pocketbase.collection('chats').delete(chatId);
+
+    setIsLoading(false);
+    setIsOpen(false);
+
+    navigate('../chats');
   };
 
   return (

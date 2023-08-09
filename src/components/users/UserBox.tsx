@@ -1,8 +1,8 @@
-import axios from 'axios';
-import { MouseEvent, useCallback, useState } from 'react';
+import { MouseEvent, useState } from 'react';
 import { PbUser } from '../../types/types';
 import { useNavigate } from 'react-router-dom';
 import Avatar from '../ui/Avatar';
+import { pocketbase } from '../../lib/pocketbase';
 
 interface Props {
   user: PbUser;
@@ -10,24 +10,38 @@ interface Props {
 
 const UserBox = ({ user }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
+
   const navigate = useNavigate();
 
-  const handleClick = useCallback(
-    (e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>) => {
-      e.preventDefault();
-      setIsLoading(true);
+  const currentUser = pocketbase.authStore.model;
 
-      axios
-        .post('/api/conversations', { userId: user.id })
-        .then(data => {
-          navigate(`/conversations/${data.data.id}`);
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
-    },
-    [navigate, user.id]
-  );
+  const handleClick = async (
+    e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>
+  ) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    const existingChats = await pocketbase.collection('chats').getFullList({
+      sort: '-created',
+      filter: `users ~ "${currentUser?.id}" && users ~ "${user.id}"`,
+    });
+
+    const singleChat = existingChats[0];
+
+    if (singleChat && singleChat.id) {
+      navigate(`../chats/${singleChat.id}`);
+    }
+
+    const data = {
+      lastMessageAt: new Date(),
+      isGroup: false,
+      users: [currentUser?.id, user.id],
+    };
+
+    const newChat = await pocketbase.collection('chats').create(data);
+
+    navigate(`../chats/${newChat.id}`);
+  };
 
   return (
     <>

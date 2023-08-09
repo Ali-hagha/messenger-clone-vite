@@ -3,6 +3,7 @@ import './index.css';
 import {
   createBrowserRouter,
   createRoutesFromElements,
+  Navigate,
   Route,
   RouterProvider,
 } from 'react-router-dom';
@@ -33,6 +34,7 @@ const router = createBrowserRouter(
           <Route
             path="chats/:chatId"
             element={<ChatMessagesPage />}
+            errorElement={<Navigate to={'../chats'} />}
             loader={loadMessagesAndChat}
           />
         </Route>

@@ -65,7 +65,7 @@ const ChatBox = ({ chat, active }: Props) => {
       return lastMessage?.body;
     }
 
-    return 'Started a conversation';
+    return 'New chat';
   }, [lastMessage]);
 
   if (isLoading) {

@@ -2,7 +2,7 @@ import Header from '../components/messages/header/Header';
 import { Suspense } from 'react';
 import Body from '../components/messages/Body';
 import MessageForm from '../components/messages/MessageForm';
-import { Await, useLoaderData } from 'react-router-dom';
+import { Await, Navigate, useLoaderData } from 'react-router-dom';
 import { PbChat, PbMessage } from '../types/types';
 import MessagesSkeleton from '../components/skeletons/MessagesSkeleton';
 import ChatHeaderSkeleton from '../components/skeletons/ChatHeaderSkeleton';
@@ -16,13 +16,13 @@ const ChatMessagesPage = () => {
   return (
     <div className="h-full bg-chat-gradient bg-cover flex flex-col flex-1 relative">
       <Suspense fallback={<ChatHeaderSkeleton />}>
-        <Await resolve={chat}>
+        <Await resolve={chat} errorElement={<Navigate to={'../chats'} />}>
           {(resolvedChat: PbChat) => <Header chat={resolvedChat} />}
         </Await>
       </Suspense>
 
       <Suspense fallback={<MessagesSkeleton />}>
-        <Await resolve={messages}>
+        <Await resolve={messages} errorElement={<Navigate to={'../chats'} />}>
           {(resolvedMessages: PbMessage[]) => (
             <Body initialMessages={resolvedMessages} />
           )}
