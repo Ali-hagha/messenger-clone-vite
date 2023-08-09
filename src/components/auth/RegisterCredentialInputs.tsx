@@ -6,12 +6,15 @@ import { CredentialInputType } from './AuthForm';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
 import { pocketbase } from '../../lib/pocketbase';
+import { NavigateFunction, useNavigate } from 'react-router-dom';
 
 interface Props {
   loadingState: [boolean, Dispatch<SetStateAction<boolean>>];
 }
 
 const RegisterCredentialInputs = ({ loadingState }: Props) => {
+  const navigate = useNavigate();
+
   const {
     register,
     setError,
@@ -31,7 +34,9 @@ const RegisterCredentialInputs = ({ loadingState }: Props) => {
   const onSubmit: SubmitHandler<CredentialInputType> = data => {
     setIsLoading(true);
 
-    handleCredentialRegister(data, setError).finally(() => setIsLoading(false));
+    handleCredentialRegister(data, setError, navigate).finally(() =>
+      setIsLoading(false)
+    );
   };
 
   return (
@@ -74,7 +79,8 @@ const RegisterCredentialInputs = ({ loadingState }: Props) => {
 
 const handleCredentialRegister = async (
   data: CredentialInputType,
-  setError: UseFormSetError<CredentialInputType>
+  setError: UseFormSetError<CredentialInputType>,
+  navigate: NavigateFunction
 ) => {
   const userData = {
     email: data.email,
@@ -86,6 +92,8 @@ const handleCredentialRegister = async (
   try {
     await pocketbase.collection('users').create(userData);
     toast.success('Logged in.');
+
+    navigate('users');
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {

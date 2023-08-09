@@ -4,6 +4,7 @@ import { toast } from 'react-hot-toast';
 import SocialAuthBtn from './SocialAuthBtn';
 import { BsGithub, BsGoogle } from 'react-icons/bs';
 import { pocketbase } from '../../lib/pocketbase';
+import { useNavigate } from 'react-router-dom';
 
 interface Props {
   loadingState: [boolean, Dispatch<SetStateAction<boolean>>];
@@ -11,6 +12,7 @@ interface Props {
 
 const SocialAuthBtnGroup = ({ loadingState }: Props) => {
   const [isLoading, setIsLoading] = loadingState;
+  const navigate = useNavigate();
 
   const handleSocialLogin = async (provider: string) => {
     setIsLoading(true);
@@ -28,6 +30,7 @@ const SocialAuthBtnGroup = ({ loadingState }: Props) => {
       })
       .then(res => {
         toast.success('Logged in.');
+        navigate('users');
         return res;
       })
       .catch(error => {

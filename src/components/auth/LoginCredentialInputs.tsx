@@ -6,12 +6,14 @@ import { CredentialInputType } from './AuthForm';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
 import { pocketbase } from '../../lib/pocketbase';
+import { NavigateFunction, useNavigate } from 'react-router-dom';
 
 interface Props {
   loadingState: [boolean, Dispatch<SetStateAction<boolean>>];
 }
 
 const LoginCredentialInputs = ({ loadingState }: Props) => {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -29,7 +31,7 @@ const LoginCredentialInputs = ({ loadingState }: Props) => {
   const onSubmit: SubmitHandler<CredentialInputType> = data => {
     setIsLoading(true);
 
-    handleCredentialLogin(data).finally(() => {
+    handleCredentialLogin(data, navigate).finally(() => {
       setIsLoading(false);
     });
   };
@@ -63,12 +65,18 @@ const LoginCredentialInputs = ({ loadingState }: Props) => {
   );
 };
 
-const handleCredentialLogin = async (data: CredentialInputType) => {
+const handleCredentialLogin = async (
+  data: CredentialInputType,
+  navigate: NavigateFunction
+) => {
   try {
     await pocketbase
       .collection('users')
       .authWithPassword(data.email, data.password);
+
     toast.success('Logged in.');
+
+    navigate('users');
   } catch (_) {
     toast.error('Username or password is incorrect.');
   }
