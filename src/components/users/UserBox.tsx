@@ -51,7 +51,7 @@ const UserBox = ({ user }: Props) => {
       type="button"
       disabled={isLoading}
       onClick={(e) => handleClick(e)}
-      className="mb-2 flex w-full cursor-pointer items-center justify-start rounded-xl p-3 text-gray-500 transition enabled:hover:bg-slate-200 enabled:hover:text-gray-700 enabled:active:bg-slate-300 disabled:opacity-30 md:bg-transparent"
+      className="mb-2 flex w-full cursor-pointer items-center justify-start rounded-xl bg-white p-3 text-gray-500 transition enabled:hover:bg-slate-200 enabled:hover:text-gray-700 enabled:active:bg-slate-300 disabled:opacity-30 md:bg-transparent"
     >
       <Avatar user={user} />
       <div className="ml-4 select-none text-sm font-semibold">{user.name}</div>

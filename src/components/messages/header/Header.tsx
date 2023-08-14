@@ -1,11 +1,11 @@
-import { HiChevronLeft } from 'react-icons/hi';
-import HeaderDropDownMenu from './HeaderDropDownMenu';
-import { useState } from 'react';
-import ConfirmDeleteChatDialog from './ConfirmDeleteChatDialog';
-import { PbChat } from '../../../types/types';
-import useOtherUser from '../../../hooks/useOtherUser';
-import { Link } from 'react-router-dom';
-import Avatar from '../../ui/Avatar';
+import { HiChevronLeft } from "react-icons/hi";
+import HeaderDropDownMenu from "./HeaderDropDownMenu";
+import { useState } from "react";
+import ConfirmDeleteChatDialog from "./ConfirmDeleteChatDialog";
+import { PbChat } from "../../../types/types";
+import useOtherUser from "../../../hooks/useOtherUser";
+import { Link } from "react-router-dom";
+import Avatar from "../../ui/Avatar";
 
 interface Props {
   chat: PbChat;
@@ -22,18 +22,18 @@ const Header = ({ chat }: Props) => {
 
   return (
     <>
-      <div className="flex items-center justify-between px-3 py-3 bg-white/60 backdrop-blur-lg absolute top-0 inset-x-0 w-full h-16 z-50">
+      <div className="absolute inset-x-0 top-0 z-50 flex h-16 w-full items-center justify-between bg-white/60 px-3 py-3 backdrop-blur-lg">
         <div className="flex items-center">
           <Link
-            to="/conversations"
-            className="block lg:hidden p-1 text-gray-500 text-3xl rounded-xl transition active:bg-sky-200 active:text-sky-700"
+            to="/chats"
+            className="block rounded-xl p-1 text-3xl text-gray-500 transition active:bg-sky-200 active:text-sky-700 lg:hidden"
           >
             <HiChevronLeft />
           </Link>
-          <div className="flex items-center ml-4">
+          <div className="ml-4 flex items-center">
             <Avatar user={otherUser} />
             <div className="ml-3 select-none text-gray-700">
-              <p className="text-sm font-semibold mb-1">
+              <p className="mb-1 text-sm font-semibold">
                 {chat.name || otherUser.name}
               </p>
               <p className="text-xs">Online</p>
