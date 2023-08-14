@@ -21,7 +21,18 @@ const ChatBox = ({ chat, active }: Props) => {
 
   const currentUserId = pocketbase.authStore.model?.id;
 
-  useEffect(() => {}, [isLoading]);
+  useEffect(() => {
+    pocketbase.collection("messages").subscribe("*", async (action) => {
+      const newMessage = action.record as PbMessage;
+      if (newMessage.chat === chat.id) {
+        setLastMessage(newMessage);
+      }
+    });
+
+    return () => {
+      pocketbase.collection("messages").unsubscribe();
+    };
+  }, [chat.id]);
 
   useEffect(() => {
     const getLastMessage = async () => {

@@ -20,7 +20,7 @@ export interface PbChat extends Record {
 
 export interface PbMessage extends Record {
   body: string;
-  conversation: string;
+  chat: string;
   image?: string;
   seenBy: string[];
   sender: string;

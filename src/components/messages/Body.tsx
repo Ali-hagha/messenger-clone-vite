@@ -33,7 +33,7 @@ const Body = ({ initialMessages }: Props) => {
     pocketbase.collection("messages").subscribe("*", async (action) => {
       const newMessage = await getMessageById(action.record.id);
 
-      if (newMessage) {
+      if (newMessage && chatId === newMessage.chat) {
         setMessages((oldMessages) => {
           if (!oldMessages) {
             return [newMessage];
@@ -52,7 +52,7 @@ const Body = ({ initialMessages }: Props) => {
     return () => {
       pocketbase.collection("messages").unsubscribe();
     };
-  }, []);
+  }, [chatId]);
 
   if (messages === null) {
     return <MessagesSkeleton />;
