@@ -41,12 +41,14 @@ const Body = ({ initialMessages }: Props) => {
           }
 
           if (oldMessages.some((m) => m.id === newMessage.id)) {
-            return oldMessages;
+            return oldMessages.map((m) =>
+              m.id === newMessage.id ? newMessage : m,
+            );
           }
 
-          scrollToBottom();
           return [...oldMessages, newMessage];
         });
+        scrollToBottom();
       }
     });
 

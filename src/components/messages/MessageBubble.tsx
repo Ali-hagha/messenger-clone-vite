@@ -4,6 +4,7 @@ import { PbMessage } from "../../types/types";
 import { pocketbase } from "../../lib/pocketbase";
 import Avatar from "../ui/Avatar";
 import { useInView } from "react-intersection-observer";
+import { BsCheck2All } from "react-icons/bs";
 
 interface Props {
   message: PbMessage;
@@ -33,11 +34,6 @@ const MessageBubble = ({ message, isLastMessage }: Props) => {
 
   const isMessageSeen = messageSeenCount > 0;
 
-  const seenList = (message.expand.seenBy || [])
-    .filter((user) => user.email !== message.expand.sender.email)
-    .map((user) => user.name)
-    .join(", ");
-
   return (
     <div
       ref={ref}
@@ -60,7 +56,7 @@ const MessageBubble = ({ message, isLastMessage }: Props) => {
             className={clsx(
               `flex flex-col break-words rounded-2xl px-4 py-2`,
               isOwnMessage
-                ? "max-w-xs rounded-se-sm bg-gradient-to-r from-sky-700 to-sky-500 text-white selection:bg-white/30 md:max-w-sm lg:rounded-se-2xl lg:rounded-ss-sm"
+                ? "max-w-xs self-end rounded-se-sm bg-gradient-to-r from-sky-700 to-sky-500 text-white selection:bg-white/30 md:max-w-sm lg:self-start lg:rounded-se-2xl lg:rounded-ss-sm"
                 : "max-w-xs rounded-ss-sm bg-white text-gray-600 selection:bg-sky-200 md:max-w-sm ",
             )}
           >
@@ -75,8 +71,8 @@ const MessageBubble = ({ message, isLastMessage }: Props) => {
             isOwnMessage &&
             isLastMessage &&
             messageSeenCount === 1 && (
-              <div className="pt-1 text-xs font-semibold text-gray-500">
-                <p>seen by {seenList}</p>
+              <div className="self-start pt-1 text-xl font-semibold text-gray-500 lg:self-end">
+                <BsCheck2All />
               </div>
             )}
           {isMessageSeen &&
