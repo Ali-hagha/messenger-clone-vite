@@ -1,12 +1,9 @@
-import PocketBase from 'pocketbase';
-
-const globalPocketbase = globalThis as unknown as {
-  pocketbase: PocketBase | undefined;
-};
+import PocketBase from "pocketbase";
 
 const url = import.meta.env.VITE_POCKETBASE_URL;
 
-export const pocketbase = globalPocketbase.pocketbase ?? new PocketBase(url);
+export const pocketbase = new PocketBase(url);
 
-if (process.env.NODE_ENV !== 'production')
-  globalPocketbase.pocketbase = pocketbase;
+export const createPocketbase = () => {
+  return new PocketBase(url);
+};

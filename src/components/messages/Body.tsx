@@ -1,11 +1,11 @@
 import useChatInfo from "../../hooks/useChatInfo";
-import { pocketbase } from "../../lib/pocketbase";
 import { PbMessage } from "../../types/types";
 import EmptyChatBox from "../ui/EmptyChatBox";
 import MessageBubble from "./MessageBubble";
 import { useEffect, useRef, useState } from "react";
 import MessagesSkeleton from "../skeletons/MessagesSkeleton";
 import getMessageById from "../../actions/getMessageById";
+import { createPocketbase } from "../../lib/pocketbase";
 
 interface Props {
   initialMessages: PbMessage[];
@@ -30,6 +30,7 @@ const Body = ({ initialMessages }: Props) => {
   }, [chatId, messages]);
 
   useEffect(() => {
+    const pocketbase = createPocketbase();
     pocketbase.collection("messages").subscribe("*", async (action) => {
       const newMessage = await getMessageById(action.record.id);
 
@@ -50,7 +51,7 @@ const Body = ({ initialMessages }: Props) => {
     });
 
     return () => {
-      pocketbase.collection("messages").unsubscribe();
+      pocketbase.collection("messages").unsubscribe("*");
     };
   }, [chatId]);
 

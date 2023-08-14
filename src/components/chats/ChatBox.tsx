@@ -3,7 +3,7 @@ import { format } from "date-fns";
 import { useEffect, useMemo, useState } from "react";
 import { PbChat, PbMessage } from "../../types/types";
 import useOtherUser from "../../hooks/useOtherUser";
-import { pocketbase } from "../../lib/pocketbase";
+import { createPocketbase, pocketbase } from "../../lib/pocketbase";
 import { Link } from "react-router-dom";
 import Avatar from "../ui/Avatar";
 import ChatBoxSkeleton from "../skeletons/ChatBoxSkeleton";
@@ -22,7 +22,8 @@ const ChatBox = ({ chat, active }: Props) => {
   const currentUserId = pocketbase.authStore.model?.id;
 
   useEffect(() => {
-    pocketbase.collection("messages").subscribe("*", async (action) => {
+    const pb = createPocketbase();
+    pb.collection("messages").subscribe("*", async (action) => {
       const newMessage = action.record as PbMessage;
       if (newMessage.chat === chat.id) {
         setLastMessage(newMessage);
@@ -30,7 +31,7 @@ const ChatBox = ({ chat, active }: Props) => {
     });
 
     return () => {
-      pocketbase.collection("messages").unsubscribe();
+      pb.collection("messages").unsubscribe("*");
     };
   }, [chat.id]);
 
@@ -49,7 +50,8 @@ const ChatBox = ({ chat, active }: Props) => {
     if (!lastMessage) {
       getLastMessage();
     }
-  }, [chat.id, lastMessage]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chat.id]);
 
   const hasCurrentUserSeenLastMessage = useMemo(() => {
     if (!lastMessage) {
