@@ -1,12 +1,13 @@
-import clsx from 'clsx';
-import { format } from 'date-fns';
-import { useEffect, useMemo, useState } from 'react';
-import { PbChat, PbMessage } from '../../types/types';
-import useOtherUser from '../../hooks/useOtherUser';
-import { pocketbase } from '../../lib/pocketbase';
-import { Link } from 'react-router-dom';
-import Avatar from '../ui/Avatar';
-import ChatBoxSkeleton from '../skeletons/ChatBoxSkeleton';
+import clsx from "clsx";
+import { format } from "date-fns";
+import { useEffect, useMemo, useState } from "react";
+import { PbChat, PbMessage } from "../../types/types";
+import useOtherUser from "../../hooks/useOtherUser";
+import { pocketbase } from "../../lib/pocketbase";
+import { Link } from "react-router-dom";
+import Avatar from "../ui/Avatar";
+import ChatBoxSkeleton from "../skeletons/ChatBoxSkeleton";
+import getLastMessagByChatId from "../../actions/getLastMessageByChatId";
 
 interface Props {
   chat: PbChat;
@@ -25,20 +26,13 @@ const ChatBox = ({ chat, active }: Props) => {
   useEffect(() => {
     const getLastMessage = async () => {
       setIsLoading(true);
+      const message = await getLastMessagByChatId(chat.id);
 
-      pocketbase
-        .collection('messages')
-        .getFirstListItem(`chat = "${chat.id}"`, {
-          sort: '-created',
-        })
-        .then(res => {
-          const message = res as unknown as PbMessage;
-          setLastMessage(message);
-        })
-        .catch(() => {})
-        .finally(() => {
-          setIsLoading(false);
-        });
+      if (message) {
+        setLastMessage(message);
+      }
+
+      setIsLoading(false);
     };
 
     if (!lastMessage) {
@@ -57,7 +51,7 @@ const ChatBox = ({ chat, active }: Props) => {
       return false;
     }
 
-    return seenArray.some(userId => userId === currentUserId);
+    return seenArray.some((userId) => userId === currentUserId);
   }, [currentUserId, lastMessage]);
 
   const lastMessageText = useMemo(() => {
@@ -65,7 +59,7 @@ const ChatBox = ({ chat, active }: Props) => {
       return lastMessage?.body;
     }
 
-    return 'New chat';
+    return "New chat";
   }, [lastMessage]);
 
   if (isLoading) {
@@ -76,24 +70,24 @@ const ChatBox = ({ chat, active }: Props) => {
     <Link
       to={`/chats/${chat.id}`}
       className={clsx(
-        `hover:bg-slate-200 text-gray-500 hover:text-gray-700 active:bg-slate-300 transition flex items-center justify-start p-3 rounded-xl cursor-pointer`,
-        active ? 'bg-slate-200 text-sky-600' : 'bg-white md:bg-transparent'
+        `flex cursor-pointer items-center justify-start rounded-xl p-3 text-gray-500 transition hover:bg-slate-200 hover:text-gray-700 active:bg-slate-300`,
+        active ? "bg-slate-200 text-sky-600" : "bg-white md:bg-transparent",
       )}
     >
       <Avatar user={otherUser} />
-      <div className="flex select-none w-full justify-between">
+      <div className="flex w-full select-none justify-between">
         <div className="ml-4">
-          <p className=" text-sm font-semibold mb-1">{otherUser.name}</p>
-          <p className="text-xs truncate w-40 ">{lastMessageText}</p>
+          <p className=" mb-1 text-sm font-semibold">{otherUser.name}</p>
+          <p className="w-40 truncate text-xs ">{lastMessageText}</p>
         </div>
         <div className="flex flex-col items-end justify-between">
           {!isLoading && lastMessage && (
-            <p className="text-xs self-start text-gray-400 leading-5">
-              {format(new Date(lastMessage.created), 'p')}
+            <p className="self-start text-xs leading-5 text-gray-400">
+              {format(new Date(lastMessage.created), "p")}
             </p>
           )}
           {!isLoading && !hasCurrentUserSeenLastMessage && (
-            <span className="h-4 w-4 bg-sky-500 shrink-0 rounded-full mt-auto"></span>
+            <span className="mt-auto h-4 w-4 shrink-0 rounded-full bg-sky-500"></span>
           )}
         </div>
       </div>

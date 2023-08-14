@@ -1,10 +1,11 @@
-import useChatInfo from '../../hooks/useChatInfo';
-import { pocketbase } from '../../lib/pocketbase';
-import { PbMessage } from '../../types/types';
-import EmptyChatBox from '../ui/EmptyChatBox';
-import MessageBubble from './MessageBubble';
-import { useEffect, useRef, useState } from 'react';
-import MessagesSkeleton from '../skeletons/MessagesSkeleton';
+import useChatInfo from "../../hooks/useChatInfo";
+import { pocketbase } from "../../lib/pocketbase";
+import { PbMessage } from "../../types/types";
+import EmptyChatBox from "../ui/EmptyChatBox";
+import MessageBubble from "./MessageBubble";
+import { useEffect, useRef, useState } from "react";
+import MessagesSkeleton from "../skeletons/MessagesSkeleton";
+import getMessageById from "../../actions/getMessageById";
 
 interface Props {
   initialMessages: PbMessage[];
@@ -20,7 +21,7 @@ const Body = ({ initialMessages }: Props) => {
   }, [initialMessages]);
 
   const scrollToBottom = () => {
-    bottomRef?.current?.scrollIntoView({ behavior: 'smooth' });
+    bottomRef?.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   useEffect(() => {
@@ -29,29 +30,27 @@ const Body = ({ initialMessages }: Props) => {
   }, [chatId, messages]);
 
   useEffect(() => {
-    pocketbase.collection('messages').subscribe('*', async action => {
-      const newMessage = (await pocketbase
-        .collection('messages')
-        .getOne(action.record.id, {
-          expand: 'seenBy,sender',
-        })) as unknown as PbMessage;
+    pocketbase.collection("messages").subscribe("*", async (action) => {
+      const newMessage = await getMessageById(action.record.id);
 
-      setMessages(oldMessages => {
-        if (!oldMessages) {
-          return null;
-        }
+      if (newMessage) {
+        setMessages((oldMessages) => {
+          if (!oldMessages) {
+            return [newMessage];
+          }
 
-        if (oldMessages.some(m => m.id === newMessage.id)) {
-          return oldMessages;
-        }
+          if (oldMessages.some((m) => m.id === newMessage.id)) {
+            return oldMessages;
+          }
 
-        scrollToBottom();
-        return [...oldMessages, newMessage];
-      });
+          scrollToBottom();
+          return [...oldMessages, newMessage];
+        });
+      }
     });
 
     return () => {
-      pocketbase.collection('messages').unsubscribe();
+      pocketbase.collection("messages").unsubscribe();
     };
   }, []);
 
@@ -64,7 +63,7 @@ const Body = ({ initialMessages }: Props) => {
   }
 
   return (
-    <div className="flex flex-col flex-1 pt-16 overflow-y-auto">
+    <div className="flex flex-1 flex-col overflow-y-auto pt-16">
       {messages.map((message, i) => (
         <MessageBubble
           key={message.id}
