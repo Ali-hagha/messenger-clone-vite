@@ -1,6 +1,6 @@
-import { defer } from 'react-router-dom';
-import { pocketbase } from '../lib/pocketbase';
-import { PbUser } from '../types/types';
+import { defer } from "react-router-dom";
+import { pocketbase } from "../lib/pocketbase";
+import { PbUser } from "../types/types";
 
 const getUsers = async () => {
   const currentUser = pocketbase.authStore.model;
@@ -10,13 +10,13 @@ const getUsers = async () => {
   }
 
   try {
-    const users = pocketbase.collection('users').getFullList({
-      sort: '-created',
+    const users = pocketbase.collection("users").getFullList({
+      sort: "-created",
       filter: `id != '${currentUser.id}'`,
     });
 
     return defer({
-      users: users as unknown as Promise<PbUser[]>,
+      users: users as Promise<PbUser[]>,
     });
   } catch (_) {
     return [];

@@ -1,15 +1,15 @@
-import { pocketbase } from '../lib/pocketbase';
-import { PbMessage } from '../types/types';
+import { pocketbase } from "../lib/pocketbase";
+import { PbMessage } from "../types/types";
 
 const getMessages = async (chatId: string) => {
   try {
-    const messages = pocketbase.collection('messages').getFullList({
-      sort: '+created',
+    const messages = pocketbase.collection("messages").getFullList({
+      sort: "+created",
       filter: `chat = '${chatId}'`,
-      expand: 'sender,seenBy',
+      expand: "sender,seenBy",
     });
 
-    return messages as unknown as PbMessage[];
+    return messages as Promise<PbMessage[]>;
   } catch (_) {
     return [];
   }

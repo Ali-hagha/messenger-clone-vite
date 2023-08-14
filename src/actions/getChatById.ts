@@ -1,5 +1,5 @@
-import { pocketbase } from '../lib/pocketbase';
-import { PbChat } from '../types/types';
+import { pocketbase } from "../lib/pocketbase";
+import { PbChat } from "../types/types";
 
 const getChatById = async (chatId: string) => {
   try {
@@ -9,11 +9,11 @@ const getChatById = async (chatId: string) => {
       return null;
     }
 
-    const chat = pocketbase.collection('chats').getOne(chatId, {
-      expand: 'users',
+    const chat = pocketbase.collection("chats").getOne(chatId, {
+      expand: "users",
     });
 
-    return chat as unknown as PbChat;
+    return chat as Promise<PbChat>;
   } catch (_) {
     return null;
   }
