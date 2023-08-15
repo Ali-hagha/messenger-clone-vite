@@ -1,12 +1,12 @@
-import { Dispatch, SetStateAction } from 'react';
-import { SubmitHandler, UseFormSetError, useForm } from 'react-hook-form';
-import { toast } from 'react-hot-toast';
+import { Dispatch, SetStateAction } from "react";
+import { SubmitHandler, UseFormSetError, useForm } from "react-hook-form";
+import { toast } from "react-hot-toast";
 
-import { CredentialInputType } from './AuthForm';
-import Input from '../ui/Input';
-import Button from '../ui/Button';
-import { pocketbase } from '../../lib/pocketbase';
-import { NavigateFunction, useNavigate } from 'react-router-dom';
+import { CredentialInputType } from "./AuthForm";
+import Input from "../ui/Input";
+import Button from "../ui/Button";
+import { pocketbase } from "../../lib/pocketbase";
+import { NavigateFunction, useNavigate } from "react-router-dom";
 
 interface Props {
   loadingState: [boolean, Dispatch<SetStateAction<boolean>>];
@@ -22,20 +22,20 @@ const RegisterCredentialInputs = ({ loadingState }: Props) => {
     formState: { errors },
   } = useForm<CredentialInputType>({
     defaultValues: {
-      name: '',
-      email: '',
-      password: '',
+      name: "",
+      email: "",
+      password: "",
     },
-    mode: 'onChange',
+    mode: "onChange",
   });
 
   const [isLoading, setIsLoading] = loadingState;
 
-  const onSubmit: SubmitHandler<CredentialInputType> = data => {
+  const onSubmit: SubmitHandler<CredentialInputType> = (data) => {
     setIsLoading(true);
 
     handleCredentialRegister(data, setError, navigate).finally(() =>
-      setIsLoading(false)
+      setIsLoading(false),
     );
   };
 
@@ -80,7 +80,7 @@ const RegisterCredentialInputs = ({ loadingState }: Props) => {
 const handleCredentialRegister = async (
   data: CredentialInputType,
   setError: UseFormSetError<CredentialInputType>,
-  navigate: NavigateFunction
+  navigate: NavigateFunction,
 ) => {
   const userData = {
     email: data.email,
@@ -90,10 +90,13 @@ const handleCredentialRegister = async (
     emailVisibility: true,
   };
   try {
-    await pocketbase.collection('users').create(userData);
-    toast.success('Logged in.');
+    await pocketbase.collection("users").create(userData);
+    await pocketbase
+      .collection("users")
+      .authWithPassword(data.email, data.password);
+    toast.success("Logged in.");
 
-    navigate('users');
+    navigate("users");
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
@@ -101,13 +104,13 @@ const handleCredentialRegister = async (
     const errorData = error?.data?.data;
 
     if (errorData.email) {
-      setError('email', errorData.email);
+      setError("email", errorData.email);
     }
     if (errorData.password) {
-      setError('password', errorData.password);
+      setError("password", errorData.password);
     }
 
-    toast.error('Something went wrong. please try again later.');
+    toast.error("Something went wrong. please try again later.");
   }
 };
 

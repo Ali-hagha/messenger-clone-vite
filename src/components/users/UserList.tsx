@@ -1,5 +1,5 @@
-import { PbUser } from '../../types/types';
-import UserBox from './UserBox';
+import { PbUser } from "../../types/types";
+import UserListItems from "./UserListItems";
 
 interface Props {
   users: PbUser[];
@@ -7,14 +7,12 @@ interface Props {
 
 const UserList = ({ users }: Props) => {
   return (
-    <aside className="h-full w-full flex flex-col md:w-80 shrink-0 bg-slate-100 md:bg-slate-50 border-solid border-l-2 border-gray-100 py-6 px-3">
-      <h3 className="text-gray-700 font-semibold text-3xl mb-6 px-4">
+    <aside className="flex h-full w-full shrink-0 flex-col border-l-2 border-solid border-gray-100 bg-slate-100 px-3 py-6 md:w-80 md:bg-slate-50">
+      <h3 className="mb-6 px-4 text-3xl font-semibold text-gray-700">
         Contacts
       </h3>
-      <div className="overflow-auto flex-1 pb-20 md:pb-0">
-        {users.map(user => (
-          <UserBox key={user.id} user={user} />
-        ))}
+      <div className="flex-1 overflow-auto pb-20 md:pb-0">
+        <UserListItems initialUsers={users} />
       </div>
     </aside>
   );
