@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import Avatar from "../ui/Avatar";
 import ChatBoxSkeleton from "../skeletons/ChatBoxSkeleton";
 import getLastMessagByChatId from "../../actions/getLastMessageByChatId";
+import useChatInfo from "../../hooks/useChatInfo";
 
 interface Props {
   chat: PbChat;
@@ -16,6 +17,7 @@ interface Props {
 
 const ChatBox = ({ chat, active }: Props) => {
   const otherUser = useOtherUser(chat);
+  const { chatId: activeChatId } = useChatInfo();
   const [lastMessage, setLastMessage] = useState<PbMessage>();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -99,9 +101,11 @@ const ChatBox = ({ chat, active }: Props) => {
               {format(new Date(lastMessage.created), "p")}
             </p>
           )}
-          {!isLoading && !hasCurrentUserSeenLastMessage && (
-            <span className="mt-auto h-4 w-4 shrink-0 rounded-full bg-sky-500"></span>
-          )}
+          {!isLoading &&
+            !hasCurrentUserSeenLastMessage &&
+            activeChatId !== chat.id && (
+              <span className="mt-auto h-4 w-4 shrink-0 rounded-full bg-sky-500"></span>
+            )}
         </div>
       </div>
     </Link>
