@@ -25,11 +25,6 @@ const Body = ({ initialMessages }: Props) => {
   };
 
   useEffect(() => {
-    // axios.post(`/api/conversations/${conversationId}/seen`);
-    scrollToBottom();
-  }, [chatId, messages]);
-
-  useEffect(() => {
     const pocketbase = createPocketbase();
     pocketbase.collection("messages").subscribe("*", async (action) => {
       const newMessage = await getMessageById(action.record.id);

@@ -11,6 +11,7 @@ const getChatById = async (chatId: string) => {
 
     const chat = pocketbase.collection("chats").getOne(chatId, {
       expand: "users",
+      $autoCancel: false,
     });
 
     return chat as Promise<PbChat>;
