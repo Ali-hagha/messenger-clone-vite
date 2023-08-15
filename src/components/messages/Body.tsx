@@ -62,13 +62,20 @@ const Body = ({ initialMessages }: Props) => {
 
   return (
     <div className="flex flex-1 flex-col overflow-y-auto pt-16">
-      {messages.map((message, i) => (
-        <MessageBubble
-          key={message.id}
-          message={message}
-          isLastMessage={i === messages.length - 1}
-        />
-      ))}
+      {messages.map((message, i, messagesArr) => {
+        let previousMessage: PbMessage | undefined = undefined;
+        if (i > 0) {
+          previousMessage = messagesArr[i - 1];
+        }
+        return (
+          <MessageBubble
+            key={message.id}
+            message={message}
+            isLastMessage={i === messagesArr.length - 1}
+            previousMessage={previousMessage}
+          />
+        );
+      })}
       <div className="pt-24" ref={bottomRef} />
     </div>
   );

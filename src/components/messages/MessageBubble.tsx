@@ -3,15 +3,16 @@ import { format } from "date-fns";
 import { PbMessage } from "../../types/types";
 import { pocketbase } from "../../lib/pocketbase";
 import { useInView } from "react-intersection-observer";
-import { BsCheck2All } from "react-icons/bs";
 import ChatBubbleAvatar from "../ui/ChatBubbleAvatar";
+import MessageSeenIndicator from "./MessageSeenIndicator";
 
 interface Props {
   message: PbMessage;
   isLastMessage: boolean;
+  previousMessage: PbMessage | undefined;
 }
 
-const MessageBubble = ({ message, isLastMessage }: Props) => {
+const MessageBubble = ({ message, isLastMessage, previousMessage }: Props) => {
   const { ref } = useInView({
     triggerOnce: true,
     threshold: 0.5,
@@ -28,18 +29,17 @@ const MessageBubble = ({ message, isLastMessage }: Props) => {
 
   const isOwnMessage = message.expand.sender.email === user.email;
 
-  const messageSeenCount = (message.expand.seenBy || []).filter(
-    (user) => user.email !== message.expand.sender.email,
-  ).length;
-
-  const isMessageSeen = messageSeenCount > 0;
+  const isFirstMessageByUser = previousMessage
+    ? message.sender !== previousMessage.sender
+    : true;
 
   return (
     <div
       ref={ref}
       className={clsx(
-        `flex flex-col justify-center p-2`,
+        `flex flex-col justify-center`,
         isOwnMessage ? "items-end lg:items-start" : "items-start",
+        isFirstMessageByUser ? "pb-0.5 pt-3" : "p-0.5",
       )}
     >
       <div
@@ -48,8 +48,10 @@ const MessageBubble = ({ message, isLastMessage }: Props) => {
           isOwnMessage ? "flex-row-reverse lg:flex-row" : "flex-row",
         )}
       >
-        <div className="mx-3">
-          <ChatBubbleAvatar user={message.expand.sender} />
+        <div className={clsx(`mx-3`, isFirstMessageByUser || "p-5")}>
+          {isFirstMessageByUser && (
+            <ChatBubbleAvatar user={message.expand.sender} />
+          )}
         </div>
         <div className="flex flex-col">
           <div
@@ -67,22 +69,11 @@ const MessageBubble = ({ message, isLastMessage }: Props) => {
               </p>
             </div>
           </div>
-          {isMessageSeen &&
-            isOwnMessage &&
-            isLastMessage &&
-            messageSeenCount === 1 && (
-              <div className="self-start pt-1 text-xl font-semibold text-gray-500 lg:self-end">
-                <BsCheck2All />
-              </div>
-            )}
-          {isMessageSeen &&
-            isOwnMessage &&
-            isLastMessage &&
-            messageSeenCount > 1 && (
-              <div className="pt-1 text-xs font-semibold text-gray-500">
-                <p>seen by {messageSeenCount} people</p>
-              </div>
-            )}
+          <MessageSeenIndicator
+            message={message}
+            isLastMessage={isLastMessage}
+            isOwnMessage={isOwnMessage}
+          />
         </div>
       </div>
     </div>
