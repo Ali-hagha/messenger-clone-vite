@@ -9,7 +9,6 @@ const AppLayout = () => {
   const currentUser = pocketbase.authStore.model;
 
   useEffect(() => {
-    console.log("update inOnline");
     document.addEventListener("visibilitychange", () => {
       if (currentUser && currentUser.id) {
         setUserOnlineStatus(

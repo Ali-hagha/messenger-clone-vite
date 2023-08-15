@@ -1,8 +1,8 @@
-import { useMemo } from 'react';
-import { RiChat1Fill, RiLogoutCircleLine, RiTeamFill } from 'react-icons/ri';
-import { useLocation } from 'react-router-dom';
-import useChatInfo from './useChatInfo';
-import { pocketbase } from '../lib/pocketbase';
+import { useMemo } from "react";
+import { RiChat1Fill, RiLogoutCircleLine, RiTeamFill } from "react-icons/ri";
+import { useLocation } from "react-router-dom";
+import useChatInfo from "./useChatInfo";
+import { pocketbase } from "../lib/pocketbase";
 
 const useNavRoutes = () => {
   const location = useLocation();
@@ -12,33 +12,33 @@ const useNavRoutes = () => {
   const routes = useMemo(
     () => [
       {
-        href: '/users',
-        active: pathname === '/users',
+        href: "/users",
+        active: pathname === "/users",
         icon: RiTeamFill,
-        title: 'users',
+        title: "users",
       },
       {
-        href: '/chats',
-        active: pathname === '/chats' || chatId.length > 0,
+        href: "/chats",
+        active: pathname === "/chats" || chatId.length > 0,
         icon: RiChat1Fill,
-        title: 'chats',
+        title: "chats",
       },
       {
-        href: '/#',
+        href: "/#",
         icon: RiLogoutCircleLine,
-        title: 'log out',
+        title: "log out",
         onClick: () => handleLogout(),
       },
     ],
-    [chatId, pathname]
+    [chatId, pathname],
   );
 
   return routes;
 };
 
-const handleLogout = () => {
+const handleLogout = async () => {
   pocketbase.authStore.clear();
-  location.replace('/');
+  location.replace("/");
 };
 
 export default useNavRoutes;

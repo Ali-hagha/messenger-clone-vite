@@ -20,6 +20,10 @@ const Body = ({ initialMessages }: Props) => {
     setMessages(initialMessages);
   }, [initialMessages]);
 
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
   const scrollToBottom = () => {
     bottomRef?.current?.scrollIntoView({ behavior: "smooth" });
   };
