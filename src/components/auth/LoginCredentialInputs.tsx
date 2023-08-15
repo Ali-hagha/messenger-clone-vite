@@ -1,12 +1,13 @@
-import { Dispatch, SetStateAction } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { toast } from 'react-hot-toast';
+import { Dispatch, SetStateAction } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "react-hot-toast";
 
-import { CredentialInputType } from './AuthForm';
-import Input from '../ui/Input';
-import Button from '../ui/Button';
-import { pocketbase } from '../../lib/pocketbase';
-import { NavigateFunction, useNavigate } from 'react-router-dom';
+import { CredentialInputType } from "./AuthForm";
+import Input from "../ui/Input";
+import Button from "../ui/Button";
+import { pocketbase } from "../../lib/pocketbase";
+import { NavigateFunction, useNavigate } from "react-router-dom";
+import setUserOnlineStatus from "../../actions/setUserOnlineStatus";
 
 interface Props {
   loadingState: [boolean, Dispatch<SetStateAction<boolean>>];
@@ -20,15 +21,15 @@ const LoginCredentialInputs = ({ loadingState }: Props) => {
     formState: { errors },
   } = useForm<CredentialInputType>({
     defaultValues: {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
     },
-    mode: 'onChange',
+    mode: "onChange",
   });
 
   const [isLoading, setIsLoading] = loadingState;
 
-  const onSubmit: SubmitHandler<CredentialInputType> = data => {
+  const onSubmit: SubmitHandler<CredentialInputType> = (data) => {
     setIsLoading(true);
 
     handleCredentialLogin(data, navigate).finally(() => {
@@ -67,18 +68,20 @@ const LoginCredentialInputs = ({ loadingState }: Props) => {
 
 const handleCredentialLogin = async (
   data: CredentialInputType,
-  navigate: NavigateFunction
+  navigate: NavigateFunction,
 ) => {
   try {
-    await pocketbase
-      .collection('users')
+    const user = await pocketbase
+      .collection("users")
       .authWithPassword(data.email, data.password);
 
-    toast.success('Logged in.');
+    await setUserOnlineStatus(true, user.record.id);
 
-    navigate('users');
+    toast.success("Logged in.");
+
+    navigate("users");
   } catch (_) {
-    toast.error('Username or password is incorrect.');
+    toast.error("Username or password is incorrect.");
   }
 };
 

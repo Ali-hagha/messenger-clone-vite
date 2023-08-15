@@ -7,6 +7,7 @@ import Input from "../ui/Input";
 import Button from "../ui/Button";
 import { pocketbase } from "../../lib/pocketbase";
 import { NavigateFunction, useNavigate } from "react-router-dom";
+import setUserOnlineStatus from "../../actions/setUserOnlineStatus";
 
 interface Props {
   loadingState: [boolean, Dispatch<SetStateAction<boolean>>];
@@ -91,10 +92,11 @@ const handleCredentialRegister = async (
   };
   try {
     await pocketbase.collection("users").create(userData);
-    await pocketbase
+    const user = await pocketbase
       .collection("users")
       .authWithPassword(data.email, data.password);
     toast.success("Logged in.");
+    await setUserOnlineStatus(true, user.record.id);
 
     navigate("users");
 

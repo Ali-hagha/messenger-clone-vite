@@ -3,6 +3,7 @@ import { RiChat1Fill, RiLogoutCircleLine, RiTeamFill } from "react-icons/ri";
 import { useLocation } from "react-router-dom";
 import useChatInfo from "./useChatInfo";
 import { pocketbase } from "../lib/pocketbase";
+import setUserOnlineStatus from "../actions/setUserOnlineStatus";
 
 const useNavRoutes = () => {
   const location = useLocation();
@@ -37,6 +38,8 @@ const useNavRoutes = () => {
 };
 
 const handleLogout = async () => {
+  const currentUser = pocketbase.authStore.model!;
+  await setUserOnlineStatus(false, currentUser.id);
   pocketbase.authStore.clear();
   location.replace("/");
 };
