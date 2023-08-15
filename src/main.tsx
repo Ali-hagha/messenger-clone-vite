@@ -1,27 +1,27 @@
-import ReactDOM from 'react-dom/client';
-import './index.css';
+import ReactDOM from "react-dom/client";
+import "./index.css";
 import {
   createBrowserRouter,
   createRoutesFromElements,
   Navigate,
   Route,
   RouterProvider,
-} from 'react-router-dom';
+} from "react-router-dom";
 
 // layouts
-import AppLayout from './layouts/AppLayout';
-import ChatLayout from './layouts/ChatLayout';
+import AppLayout from "./layouts/AppLayout";
+import ChatLayout from "./layouts/ChatLayout";
 
 // pages
-import HomePage from './pages/HomePage';
-import UsersPage from './pages/UsersPage';
-import ChatsPage from './pages/ChatsPage';
-import ChatMessagesPage from './pages/ChatMessagesPage';
-import NotFoundPage from './pages/NotFoundPage';
-import getUsers from './actions/getUsers';
-import getChats from './actions/getChats';
-import loadMessagesAndChat from './actions/loaders/loadMessagesAndChat';
-import ToasterContext from './context/ToasterContext';
+import HomePage from "./pages/HomePage";
+import UsersPage from "./pages/UsersPage";
+import ChatsPage from "./pages/ChatsPage";
+import ChatMessagesPage from "./pages/ChatMessagesPage";
+import NotFoundPage from "./pages/NotFoundPage";
+import getUsers from "./actions/getUsers";
+import getChats from "./actions/getChats";
+import loadMessagesAndChat from "./actions/loaders/loadMessagesAndChat";
+import ToasterContext from "./context/ToasterContext";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -34,21 +34,21 @@ const router = createBrowserRouter(
           <Route
             path="chats/:chatId"
             element={<ChatMessagesPage />}
-            errorElement={<Navigate to={'../chats'} />}
+            errorElement={<Navigate to={"/chats"} replace={true} />}
             loader={loadMessagesAndChat}
           />
         </Route>
       </Route>
       <Route path="*" element={<NotFoundPage />} />
-    </Route>
-  )
+    </Route>,
+  ),
 );
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+ReactDOM.createRoot(document.getElementById("root")!).render(
   // <React.StrictMode>
   <>
     <ToasterContext />
     <RouterProvider router={router} />
-  </>
+  </>,
   // </React.StrictMode>
 );

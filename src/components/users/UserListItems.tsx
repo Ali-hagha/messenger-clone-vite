@@ -12,23 +12,25 @@ const UserListItems = ({ initialUsers }: Props) => {
   useEffect(() => {
     const pb = createPocketbase();
     pb.collection("users").subscribe("*", async (action) => {
-      const newUser = action.record as PbUser;
+      if (action.action === "create") {
+        const newUser = action.record as PbUser;
 
-      setUsers((oldUsers) => {
-        if (!oldUsers) {
-          return [newUser];
-        }
+        setUsers((oldUsers) => {
+          if (!oldUsers) {
+            return [newUser];
+          }
 
-        if (oldUsers.some((user) => user.email === newUser.email)) {
-          return oldUsers;
-        }
+          if (oldUsers.some((user) => user.email === newUser.email)) {
+            return oldUsers;
+          }
 
-        return [newUser, ...oldUsers];
-      });
+          return [newUser, ...oldUsers];
+        });
+      }
     });
 
     return () => {
-      pb.collection("messages").unsubscribe("*");
+      pb.collection("users").unsubscribe("*");
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

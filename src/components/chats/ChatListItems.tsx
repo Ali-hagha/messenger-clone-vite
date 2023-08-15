@@ -5,6 +5,7 @@ import useChatInfo from "../../hooks/useChatInfo";
 import { createPocketbase } from "../../lib/pocketbase";
 import getChatById from "../../actions/getChatById";
 import { useNavigate } from "react-router-dom";
+import ChatListEmptyState from "./ChatListEmptyState";
 
 interface Props {
   initialChats: PbChat[];
@@ -46,10 +47,14 @@ const ChatListItems = ({ initialChats }: Props) => {
     });
 
     return () => {
-      pb.collection("messages").unsubscribe("*");
+      pb.collection("chats").unsubscribe("*");
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  if (chats.length === 0) {
+    return <ChatListEmptyState />;
+  }
 
   return chats.map((chat) => {
     return <ChatBox key={chat.id} active={chatId === chat.id} chat={chat} />;

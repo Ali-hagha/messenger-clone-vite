@@ -1,7 +1,8 @@
 import clsx from "clsx";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PbUser } from "../../types/types";
 import { Skeleton } from "./skeleton";
+import { createPocketbase } from "../../lib/pocketbase";
 
 interface Props {
   user: PbUser;
@@ -9,8 +10,25 @@ interface Props {
 }
 
 const Avatar = ({ onClick, user }: Props) => {
-  const [isActive] = useState(true);
+  const [isActive, setIsActive] = useState(user.isOnline);
   const [isImageLoading, setIsImageLoading] = useState(true);
+
+  useEffect(() => {
+    const pb = createPocketbase();
+    pb.collection("users").subscribe("*", async (action) => {
+      if (action.action === "update") {
+        const updatedUser = action.record as PbUser;
+        if (updatedUser.id === user.id) {
+          setIsActive(updatedUser.isOnline);
+        }
+      }
+    });
+
+    return () => {
+      pb.collection("users").unsubscribe("*");
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="relative flex items-center">

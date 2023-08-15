@@ -2,9 +2,9 @@ import clsx from "clsx";
 import { format } from "date-fns";
 import { PbMessage } from "../../types/types";
 import { pocketbase } from "../../lib/pocketbase";
-import Avatar from "../ui/Avatar";
 import { useInView } from "react-intersection-observer";
 import { BsCheck2All } from "react-icons/bs";
+import ChatBubbleAvatar from "../ui/ChatBubbleAvatar";
 
 interface Props {
   message: PbMessage;
@@ -49,7 +49,7 @@ const MessageBubble = ({ message, isLastMessage }: Props) => {
         )}
       >
         <div className="mx-3">
-          <Avatar user={message.expand.sender} />
+          <ChatBubbleAvatar user={message.expand.sender} />
         </div>
         <div className="flex flex-col">
           <div

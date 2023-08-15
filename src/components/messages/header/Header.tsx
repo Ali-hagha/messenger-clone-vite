@@ -36,7 +36,6 @@ const Header = ({ chat }: Props) => {
               <p className="mb-1 text-sm font-semibold">
                 {chat.name || otherUser.name}
               </p>
-              <p className="text-xs">Online</p>
             </div>
           </div>
         </div>

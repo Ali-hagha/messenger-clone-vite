@@ -8,6 +8,7 @@ export interface PbUser extends Record {
   name: string;
   username: string;
   verified: boolean;
+  isOnline: boolean;
 }
 
 export interface PbChat extends Record {
