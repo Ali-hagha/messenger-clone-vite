@@ -9,14 +9,18 @@ const AppLayout = () => {
   const currentUser = pocketbase.authStore.model;
 
   useEffect(() => {
-    document.addEventListener("visibilitychange", () => {
-      if (currentUser && currentUser.id) {
-        setUserOnlineStatus(
-          document.visibilityState === "visible",
-          currentUser.id,
-        );
-      }
-    });
+    document.addEventListener(
+      "visibilitychange",
+      () => {
+        if (currentUser && currentUser.id) {
+          setUserOnlineStatus(
+            document.visibilityState === "visible",
+            currentUser.id,
+          );
+        }
+      },
+      { passive: true },
+    );
 
     return () => {
       document.removeEventListener("visibilitychange", () => {

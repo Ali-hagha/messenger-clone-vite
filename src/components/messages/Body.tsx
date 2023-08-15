@@ -5,7 +5,8 @@ import MessageBubble from "./MessageBubble";
 import { useEffect, useRef, useState } from "react";
 import MessagesSkeleton from "../skeletons/MessagesSkeleton";
 import getMessageById from "../../actions/getMessageById";
-import { createPocketbase } from "../../lib/pocketbase";
+import { pocketbase } from "../../lib/pocketbase";
+import { UnsubscribeFunc } from "pocketbase";
 
 interface Props {
   initialMessages: PbMessage[];
@@ -29,30 +30,39 @@ const Body = ({ initialMessages }: Props) => {
   };
 
   useEffect(() => {
-    const pocketbase = createPocketbase();
-    pocketbase.collection("messages").subscribe("*", async (action) => {
-      const newMessage = await getMessageById(action.record.id);
+    let unsubscribe: UnsubscribeFunc = () => {
+      return new Promise(() => {});
+    };
 
-      if (newMessage && chatId === newMessage.chat) {
-        setMessages((oldMessages) => {
-          if (!oldMessages) {
-            return [newMessage];
+    const subscribe = async () => {
+      unsubscribe = await pocketbase
+        .collection("messages")
+        .subscribe("*", async (action) => {
+          const newMessage = await getMessageById(action.record.id);
+
+          if (newMessage && chatId === newMessage.chat) {
+            setMessages((oldMessages) => {
+              if (!oldMessages) {
+                return [newMessage];
+              }
+
+              if (oldMessages.some((m) => m.id === newMessage.id)) {
+                return oldMessages.map((m) =>
+                  m.id === newMessage.id ? newMessage : m,
+                );
+              }
+
+              return [...oldMessages, newMessage];
+            });
+            scrollToBottom();
           }
-
-          if (oldMessages.some((m) => m.id === newMessage.id)) {
-            return oldMessages.map((m) =>
-              m.id === newMessage.id ? newMessage : m,
-            );
-          }
-
-          return [...oldMessages, newMessage];
         });
-        scrollToBottom();
-      }
-    });
+    };
+
+    subscribe();
 
     return () => {
-      pocketbase.collection("messages").unsubscribe("*");
+      unsubscribe();
     };
   }, [chatId]);
 

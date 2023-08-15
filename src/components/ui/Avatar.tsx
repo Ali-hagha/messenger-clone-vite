@@ -2,7 +2,8 @@ import clsx from "clsx";
 import { useState, useEffect } from "react";
 import { PbUser } from "../../types/types";
 import { Skeleton } from "./skeleton";
-import { createPocketbase } from "../../lib/pocketbase";
+import { pocketbase } from "../../lib/pocketbase";
+import { UnsubscribeFunc } from "pocketbase";
 
 interface Props {
   user: PbUser;
@@ -14,18 +15,27 @@ const Avatar = ({ onClick, user }: Props) => {
   const [isImageLoading, setIsImageLoading] = useState(true);
 
   useEffect(() => {
-    const pb = createPocketbase();
-    pb.collection("users").subscribe("*", async (action) => {
-      if (action.action === "update") {
-        const updatedUser = action.record as PbUser;
-        if (updatedUser.id === user.id) {
-          setIsActive(updatedUser.isOnline);
-        }
-      }
-    });
+    let unsubscribe: UnsubscribeFunc = () => {
+      return new Promise(() => {});
+    };
+
+    const subscribe = async () => {
+      unsubscribe = await pocketbase
+        .collection("users")
+        .subscribe("*", async (action) => {
+          if (action.action === "update") {
+            const updatedUser = action.record as PbUser;
+            if (updatedUser.id === user.id) {
+              setIsActive(updatedUser.isOnline);
+            }
+          }
+        });
+    };
+
+    subscribe();
 
     return () => {
-      pb.collection("users").unsubscribe("*");
+      unsubscribe();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

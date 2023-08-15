@@ -1,12 +1,12 @@
 import { useMemo } from "react";
 import { RiChat1Fill, RiLogoutCircleLine, RiTeamFill } from "react-icons/ri";
-import { useLocation } from "react-router-dom";
+import { NavigateFunction, useNavigate } from "react-router-dom";
 import useChatInfo from "./useChatInfo";
 import { pocketbase } from "../lib/pocketbase";
 import setUserOnlineStatus from "../actions/setUserOnlineStatus";
 
 const useNavRoutes = () => {
-  const location = useLocation();
+  const navigate = useNavigate();
   const pathname = location.pathname;
   const { chatId } = useChatInfo();
 
@@ -28,20 +28,26 @@ const useNavRoutes = () => {
         href: "/#",
         icon: RiLogoutCircleLine,
         title: "log out",
-        onClick: () => handleLogout(),
+        onClick: () => handleLogout(navigate),
       },
     ],
-    [chatId, pathname],
+    [chatId.length, navigate, pathname],
   );
 
   return routes;
 };
 
-const handleLogout = async () => {
+const handleLogout = async (navigate: NavigateFunction) => {
+  await pocketbase.collection("users").unsubscribe();
+  await pocketbase.collection("messages").unsubscribe();
+  await pocketbase.collection("chats").unsubscribe();
+
   const currentUser = pocketbase.authStore.model!;
+
   await setUserOnlineStatus(false, currentUser.id);
+
   pocketbase.authStore.clear();
-  location.replace("/");
+  navigate("/");
 };
 
 export default useNavRoutes;

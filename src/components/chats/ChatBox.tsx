@@ -3,12 +3,13 @@ import { format } from "date-fns";
 import { useEffect, useMemo, useState } from "react";
 import { PbChat, PbMessage } from "../../types/types";
 import useOtherUser from "../../hooks/useOtherUser";
-import { createPocketbase, pocketbase } from "../../lib/pocketbase";
+import { pocketbase } from "../../lib/pocketbase";
 import { Link } from "react-router-dom";
 import Avatar from "../ui/Avatar";
 import ChatBoxSkeleton from "../skeletons/ChatBoxSkeleton";
 import getLastMessagByChatId from "../../actions/getLastMessageByChatId";
 import useChatInfo from "../../hooks/useChatInfo";
+import { UnsubscribeFunc } from "pocketbase";
 
 interface Props {
   chat: PbChat;
@@ -24,16 +25,25 @@ const ChatBox = ({ chat, active }: Props) => {
   const currentUserId = pocketbase.authStore.model?.id;
 
   useEffect(() => {
-    const pb = createPocketbase();
-    pb.collection("messages").subscribe("*", async (action) => {
-      const newMessage = action.record as PbMessage;
-      if (newMessage.chat === chat.id) {
-        setLastMessage(newMessage);
-      }
-    });
+    let unsubscribe: UnsubscribeFunc = () => {
+      return new Promise(() => {});
+    };
+
+    const subscribe = async () => {
+      unsubscribe = await pocketbase
+        .collection("messages")
+        .subscribe("*", async (action) => {
+          const newMessage = action.record as PbMessage;
+          if (newMessage.chat === chat.id) {
+            setLastMessage(newMessage);
+          }
+        });
+    };
+
+    subscribe();
 
     return () => {
-      pb.collection("messages").unsubscribe("*");
+      unsubscribe();
     };
   }, [chat.id]);
 

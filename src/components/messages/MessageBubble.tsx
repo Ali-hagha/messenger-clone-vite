@@ -37,9 +37,9 @@ const MessageBubble = ({ message, isLastMessage, previousMessage }: Props) => {
     <div
       ref={ref}
       className={clsx(
-        `flex flex-col justify-center`,
+        `flex flex-col justify-center px-3 md:px-0`,
         isOwnMessage ? "items-end lg:items-start" : "items-start",
-        isFirstMessageByUser ? "pb-0.5 pt-3" : "p-0.5",
+        isFirstMessageByUser ? "pb-0.5 pt-3" : "pb-0.5",
       )}
     >
       <div
@@ -48,7 +48,12 @@ const MessageBubble = ({ message, isLastMessage, previousMessage }: Props) => {
           isOwnMessage ? "flex-row-reverse lg:flex-row" : "flex-row",
         )}
       >
-        <div className={clsx(`mx-3`, isFirstMessageByUser || "p-5")}>
+        <div
+          className={clsx(
+            `mx-3 hidden md:block`,
+            isFirstMessageByUser || "p-5",
+          )}
+        >
           {isFirstMessageByUser && (
             <ChatBubbleAvatar user={message.expand.sender} />
           )}
