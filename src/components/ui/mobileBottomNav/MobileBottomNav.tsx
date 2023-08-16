@@ -1,9 +1,7 @@
-'use client';
-
-import useChatInfo from '../../../hooks/useChatInfo';
-import useNavRoutes from '../../../hooks/useNavRoutes';
-import BottomNavItem from './BottomNavItem';
-import clsx from 'clsx';
+import useChatInfo from "../../../hooks/useChatInfo";
+import useNavRoutes from "../../../hooks/useNavRoutes";
+import BottomNavItem from "./BottomNavItem";
+import clsx from "clsx";
 
 const MobileBottomNav = () => {
   const routes = useNavRoutes();
@@ -12,13 +10,13 @@ const MobileBottomNav = () => {
   return (
     <div
       className={clsx(
-        `lg:hidden fixed bottom-4 inset-x-4 h-16 rounded-2xl shadow-2xl p-2 bg-white max-w-xs mx-auto z-50`,
-        isChatOpen && 'hidden'
+        `fixed inset-x-4 bottom-4 z-50 mx-auto h-16 max-w-xs rounded-2xl bg-white p-2 shadow-2xl lg:hidden`,
+        isChatOpen && "hidden",
       )}
     >
       <nav className="">
         <ul className="flex flex-row items-center justify-between space-x-4">
-          {routes.map(route => (
+          {routes.map((route) => (
             <BottomNavItem
               key={route.title}
               href={route.href}
