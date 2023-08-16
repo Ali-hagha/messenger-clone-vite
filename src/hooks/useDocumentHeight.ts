@@ -13,9 +13,15 @@ const useDocumentHeight = () => {
       setHeight(getHeight());
     };
 
+    window.addEventListener("resize", handleResize);
+
+    window.addEventListener("orientationchange", handleResize);
+
     window.visualViewport?.addEventListener("resize", handleResize);
 
     return () => {
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("orientationchange", handleResize);
       window.visualViewport?.removeEventListener("resize", handleResize);
     };
   }, [getHeight]);

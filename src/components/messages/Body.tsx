@@ -7,12 +7,14 @@ import MessagesSkeleton from "../skeletons/MessagesSkeleton";
 import getMessageById from "../../actions/getMessageById";
 import { pocketbase } from "../../lib/pocketbase";
 import { UnsubscribeFunc } from "pocketbase";
+import useDocumentHeight from "../../hooks/useDocumentHeight";
 
 interface Props {
   initialMessages: PbMessage[];
 }
 
 const Body = ({ initialMessages }: Props) => {
+  const height = useDocumentHeight();
   const [messages, setMessages] = useState<PbMessage[] | null>(null);
   const { chatId } = useChatInfo();
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -23,7 +25,7 @@ const Body = ({ initialMessages }: Props) => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, height]);
 
   const scrollToBottom = () => {
     bottomRef?.current?.scrollIntoView({ behavior: "smooth" });
@@ -90,7 +92,7 @@ const Body = ({ initialMessages }: Props) => {
           />
         );
       })}
-      <div className="pt-24" ref={bottomRef} />
+      <div className="pt-10" ref={bottomRef} />
     </div>
   );
 };

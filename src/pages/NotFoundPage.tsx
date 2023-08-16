@@ -1,5 +1,7 @@
+import { Navigate } from "react-router-dom";
+
 const NotFoundPage = () => {
-  return <div>NotFound</div>;
+  return <Navigate to={"/"} replace={true} />;
 };
 
 export default NotFoundPage;

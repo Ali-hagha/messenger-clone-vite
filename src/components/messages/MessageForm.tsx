@@ -1,4 +1,4 @@
-import { HiPaperAirplane, HiPaperClip } from "react-icons/hi2";
+import { HiPaperAirplane } from "react-icons/hi2";
 import MessageInput from "./MessageInput";
 import { useForm } from "react-hook-form";
 import IconBtn from "./IconBtn";
@@ -14,11 +14,12 @@ const MessageForm = () => {
   const { chatId } = useChatInfo();
   const currentUser = pocketbase.authStore.model;
 
-  const { register, handleSubmit, setValue } = useForm<MessageInputType>({
-    defaultValues: {
-      message: "",
-    },
-  });
+  const { register, handleSubmit, setValue, setFocus } =
+    useForm<MessageInputType>({
+      defaultValues: {
+        message: "",
+      },
+    });
 
   useEffect(() => {
     setValue("message", "", { shouldValidate: true });
@@ -35,12 +36,11 @@ const MessageForm = () => {
     };
 
     pocketbase.collection("messages").create(newMessage);
+    setFocus("message");
   });
 
   return (
     <div className="flex items-center justify-center bg-white p-3">
-      <IconBtn icon={HiPaperClip} />
-
       <form
         onSubmit={onSubmit}
         className="flex flex-1 items-center justify-center"
