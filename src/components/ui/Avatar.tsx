@@ -22,7 +22,7 @@ const Avatar = ({ onClick, user }: Props) => {
     const subscribe = async () => {
       unsubscribe = await pocketbase
         .collection("users")
-        .subscribe(user.id, async (action) => {
+        .subscribe("*", async (action) => {
           if (action.action === "update") {
             const updatedUser = action.record as PbUser;
             if (updatedUser.id === user.id) {
