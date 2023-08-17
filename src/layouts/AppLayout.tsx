@@ -7,27 +7,27 @@ import setUserOnlineStatus from "../actions/setUserOnlineStatus";
 
 const AppLayout = () => {
   const currentUser = pocketbase.authStore.model;
+  const handleVisibilityChange = () => {
+    if (currentUser && currentUser.id) {
+      setUserOnlineStatus(
+        document.visibilityState === "visible",
+        currentUser.id,
+      );
+    }
+  };
 
   useEffect(() => {
-    document.addEventListener(
-      "visibilitychange",
-      () => {
-        if (currentUser && currentUser.id) {
-          setUserOnlineStatus(
-            document.visibilityState === "visible",
-            currentUser.id,
-          );
-        }
-      },
-      { passive: true },
-    );
+    document.addEventListener("visibilitychange", handleVisibilityChange, true);
 
     return () => {
-      document.removeEventListener("visibilitychange", () => {
-        console.log("unmount");
-      });
+      document.removeEventListener(
+        "visibilitychange",
+        handleVisibilityChange,
+        true,
+      );
     };
-  }, [currentUser]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (!currentUser) {
     return <Navigate to={"/"} replace={true} />;
