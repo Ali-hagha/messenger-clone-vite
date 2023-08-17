@@ -3,8 +3,8 @@ import { Dispatch, SetStateAction } from "react";
 import { toast } from "react-hot-toast";
 import SocialAuthBtn from "./SocialAuthBtn";
 import { BsGithub, BsGoogle } from "react-icons/bs";
-import { pocketbase } from "../../lib/pocketbase";
 import { useNavigate } from "react-router-dom";
+import { createPocketbase } from "../../lib/pocketbase";
 
 interface Props {
   loadingState: [boolean, Dispatch<SetStateAction<boolean>>];
@@ -15,7 +15,10 @@ const SocialAuthBtnGroup = ({ loadingState }: Props) => {
   const navigate = useNavigate();
 
   const handleSocialLogin = async (provider: string) => {
+    const pocketbase = createPocketbase();
+
     setIsLoading(true);
+
     pocketbase
       .collection("users")
       .authWithOAuth2({ provider: provider })
@@ -28,10 +31,9 @@ const SocialAuthBtnGroup = ({ loadingState }: Props) => {
             .update(res.record.id, { name, avatarUrl, isOnline: true });
         }
       })
-      .then((res) => {
+      .then(() => {
         toast.success("Logged in.");
         navigate("users");
-        return res;
       })
       .catch((error) => {
         toast.error("Something went wrong. please try again later.");

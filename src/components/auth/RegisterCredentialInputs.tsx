@@ -5,9 +5,9 @@ import { toast } from "react-hot-toast";
 import { CredentialInputType } from "./AuthForm";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
-import { pocketbase } from "../../lib/pocketbase";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import setUserOnlineStatus from "../../actions/setUserOnlineStatus";
+import { createPocketbase } from "../../lib/pocketbase";
 
 interface Props {
   loadingState: [boolean, Dispatch<SetStateAction<boolean>>];
@@ -90,6 +90,7 @@ const handleCredentialRegister = async (
     name: data.name,
     emailVisibility: true,
   };
+  const pocketbase = createPocketbase();
   try {
     await pocketbase.collection("users").create(userData);
     const user = await pocketbase
