@@ -1,6 +1,6 @@
 import PocketBase from "pocketbase";
 
-const url = "https://messenger-clone.iran.liara.run";
+const url = "https://pocketbase-messenger.iran.liara.run";
 
 export const pocketbase = new PocketBase(url);
 
