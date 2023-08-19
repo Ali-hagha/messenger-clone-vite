@@ -11,7 +11,7 @@ const getChats = async () => {
 
   try {
     const chats = pocketbase.collection("chats").getFullList({
-      sort: "-created",
+      sort: "-updated",
       expand: "users",
       filter: `users ~ '${currentUser.id}'`,
     });

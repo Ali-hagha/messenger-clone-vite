@@ -36,6 +36,9 @@ const MessageForm = () => {
     };
 
     pocketbase.collection("messages").create(newMessage);
+    pocketbase
+      .collection("chats")
+      .update(chatId, { lastMessageAt: new Date() });
     setFocus("message");
   });
 

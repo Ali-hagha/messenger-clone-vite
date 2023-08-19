@@ -44,6 +44,26 @@ const ChatListItems = ({ initialChats }: Props) => {
             }
           }
 
+          if (action.action === "update") {
+            const updatedChat = await getChatById(action.record.id);
+
+            const compareChatUpdatedDate = (chatA: PbChat, chatB: PbChat) => {
+              const timeOfA = new Date(chatA.updated).getTime();
+              const timeOfB = new Date(chatB.updated).getTime();
+              return timeOfB - timeOfA;
+            };
+
+            if (updatedChat) {
+              setChats((oldChats) => {
+                return oldChats
+                  .map((chat) =>
+                    chat.id !== updatedChat.id ? chat : updatedChat,
+                  )
+                  .sort(compareChatUpdatedDate);
+              });
+            }
+          }
+
           if (action.action === "delete") {
             setChats((oldChats) => {
               return oldChats.filter((chat) => chat.id !== action.record.id);
